@@ -48,8 +48,5 @@ def tile (x):
 es = cma.CMAEvolutionStrategy(9* [0], 0.5)
 es.optimize(tile)
 es.result_pretty()
-es.plot()
-cma.savefig("plot.png")
-cma.closefig()
 
 print(tomatrix(tobinary(es.result()[0])))
