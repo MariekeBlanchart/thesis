@@ -29,8 +29,8 @@ def fitness(coords):
 		x = coords[i*5 + 0]
 		y = coords[i*5 + 1]
 		length = coords[i*5 + 2]
-		width = coords[i*5 + 3]
-		angle = coords[i*5 + 4]
+		width = coords[i*5 + 3]/100
+		angle = coords[i*5 + 4]/1000
 		
 		if length < 0:
 			res += -length
@@ -101,8 +101,8 @@ def draw(coords):
 		x = coords[i*5 + 0]
 		y = coords[i*5 + 1]
 		length = coords[i*5 + 2]
-		width = coords[i*5 + 3]
-		angle = coords[i*5 + 4]
+		width = coords[i*5 + 3]/100
+		angle = coords[i*5 + 4]/1000
 		colour = colours.get(i, "black")
 		
 		x1 = x - width * math.sin(angle) / 2 + length * math.cos(angle) / 2
@@ -133,11 +133,12 @@ def draw(coords):
 	win.getMouse()
 	win.close()
 
-es = cma.CMAEvolutionStrategy(numrunways*[airportlength / 2, airportwidth / 2, airportlength, 5, 0], 10)
+es = cma.CMAEvolutionStrategy(numrunways*[airportlength / 2, airportwidth / 2, airportlength, 5, 0], 1000)
 es.optimize(fitness)
 es.result_pretty()
 
 result = es.result()[0]
+print(fitness(result))
 for i in range(0, numrunways):
 	print("Runway %d:\n---------\nCenter: (%f, %f)\nLength: %f\nWidth: %f\nAngle: %f" % (i, result[i*5 + 0], result[i*5 + 1], result[i*5 + 2], result[i*5 + 3], ((result[i*5 + 4] % math.pi) / 2 / math.pi * 360)))
 draw(result)
