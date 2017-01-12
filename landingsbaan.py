@@ -1,17 +1,20 @@
 from graphics import *
 from shapely.geometry import Polygon
-import cma, numpy, math
+import cma, math
 
 
-airportlength = 60
-airportwidth = 16
+airportlength = 4000
+airportwidth = 2500
+
+minrunwaylength = 2700
+minrunwaywidth = 40
 
 scale = 10
 border = 10
 
 numrunways = 2
-preferredangledegrees = [0,0]
-usedtogether = [[1],[0]]
+preferredangledegrees = [90,90]
+usedtogether = [[], []]
 
 
 preferredangle = []
@@ -30,10 +33,10 @@ def fitness(coords):
 		angle = coords[i*5 + 4]
 		
 		if length < 0:
-			res += -length*1000000000
+			res += -length
 		
 		if width < 0:
-			res += -width*1000000000
+			res += -width
 		
 		x1 = x - width * math.sin(angle) / 2 + length * math.cos(angle) / 2
 		y1 = y + width * math.cos(angle) / 2 + length * math.sin(angle) / 2
@@ -48,22 +51,22 @@ def fitness(coords):
 		y4 = y + width * math.cos(angle) / 2 - length * math.sin(angle) / 2
 		
 		if x1 < 0 or x2 < 0 or x3 < 0 or x4 < 0:
-			res += 10000000*(1+(0-min(x1,x2,x3,x4)))
+			res += (1+(0-min(x1,x2,x3,x4)))
 			
 		if x1 > airportlength or x2 > airportlength or x3 > airportlength or x4 > airportlength:
-			res += 10000000*(1+(max(x1,x2,x3,x4)-airportlength))
+			res += (1+(max(x1,x2,x3,x4)-airportlength))
 				
 		if y1 < 0 or y2 < 0 or y3 < 0 or y4 < 0:
-			res += 10000000*(1+(0-min(y1,y2,y3,y4)))
+			res += (1+(0-min(y1,y2,y3,y4)))
 			
 		if y1 > airportwidth or y2 > airportwidth or y3 > airportwidth or y4 > airportwidth:
-			res += 10000000*(1+(max(y1,y2,y3,y4)-airportwidth))
+			res += (1+(max(y1,y2,y3,y4)-airportwidth))
 			
-		if length < 0.75*airportlength:
-			res += 10000000*(1 + 0.75*airportlength-length)
+		if length < minrunwaylength:
+			res += (1 + minrunwaylength-length)
 			
-		if width < 5:
-			res += 10000000*(1 + 5-width)
+		if width < minrunwaywidth:
+			res += (1 + minrunwaywidth-width)
 	
 		angle = angle % math.pi
 		
@@ -77,7 +80,7 @@ def fitness(coords):
 	for i in range(0, numrunways):
 		for j in usedtogether[i]:
 			if polygons[i].intersects(polygons[j]):
-				res += 100000*(1 + polygons[i].intersection(polygons[j]).area)
+				res += (1 + polygons[i].intersection(polygons[j]).area)
 	
 	return res
 
