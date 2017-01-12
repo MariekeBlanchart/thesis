@@ -27,11 +27,23 @@ def tile (x):
     x = tobinary(x)
     result = 0
 
-    sumx=sum(x)
-    if sumx < len(x)/2:
-        result -= sumx
-    else:
-        result -= len(x)-sumx
+    r = to1dlist(shiftright(to2dlist(x), 1))
+    errors = map(sum, zip(x, r))
+    errors = filter(lambda i: i != 1, errors)
+    result += len(errors)
+
+    d = to1dlist(shiftdown(to2dlist(x), 1))
+    errors = map(sum, zip(x, d))
+    errors = filter(lambda i: i != 1, errors)
+    result += len(errors)*1000
+
+
+
+    return result
+
+def fitness (x):
+    x = tobinary(x)
+    result = 0
 
     r = to1dlist(shiftright(to2dlist(x), 1))
     errors = map(sum, zip(x, r))
@@ -45,8 +57,20 @@ def tile (x):
 
     return result
 
-es = cma.CMAEvolutionStrategy(9* [0], 0.5)
-es.optimize(tile)
-es.result_pretty()
+resultaten=[0]*10
+#for y in range (1,11):
+for x in range (0,10):
+    es = cma.CMAEvolutionStrategy(16*[0],1)
+    es.optimize(fitness)
+    resultaten[x] = tile(es.result()[0])
+#     if tile(es.result()[0])==0:
+#         aantaljuist[0] +=1
 
-print(tomatrix(tobinary(es.result()[0])))
+for x in range (0,10):
+    print(resultaten[x])
+
+
+
+    
+
+    
