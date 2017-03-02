@@ -9,7 +9,7 @@ minrunwaylength = 2700
 minrunwaywidth = 40
 
 numrunways = 2
-preferredangledegrees = [60,15]
+preferredangledegrees = [60,60]
 usedtogether = [[1],[0]]
 
 
