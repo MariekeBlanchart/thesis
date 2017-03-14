@@ -18,7 +18,7 @@ mingatewidth = 60
 minrunwaylength = 2700
 minrunwaywidth = 40
 
-
+printpreviousresult = None
 
 numgate = 3
 numrunways = 2
@@ -175,7 +175,7 @@ def fitness(coords):
 	
 	return res
 	
-def draw(coords):
+def draw(coords, filenamenum = None):
 	win = graphics.GraphWin('airport', 600, 600*(airport.bounds[3] - airport.bounds[1])/(airport.bounds[2] - airport.bounds[0])) # give title and dimensions
 	win.setCoords(airport.bounds[0] - 10, airport.bounds[1] - 10, airport.bounds[2] + 10, airport.bounds[3] + 10)
 
@@ -246,14 +246,40 @@ def draw(coords):
 		runway4.setOutline(colour)
 		runway4.draw(win)
 
-	win.getMouse()
+	if filenamenum is not None:
+		win.postscript(file="output/step-%05d.ps" % filenamenum, colormode='color')
+	else:
+		win.getMouse()
 	win.close()
 
 es = cma.CMAEvolutionStrategy((numgate + numrunways) * [airport.centroid.coords[0][0], airport.centroid.coords[0][1], mingatelength, mingatewidth*100, 0], 1000)
-es.optimize(fitness)
-es.result_pretty()
+logger = cma.CMADataLogger().register(es)
 
-result = es.result()[0]
+if printpreviousresult:
+	result = printpreviousresult
+else:
+	es.optimize(fitness, logger=logger)
+	es.result_pretty()
+
+	result = es.result()[0]
+	
+steps = logger.load().data()["xrecent"]
+
+i = 0
+while i < len(steps):
+	print("%d of %d" % (i + 1, len(steps)))
+	print(steps[i][5:])
+	draw(steps[i][5:], i)
+	
+	if i < 100:
+		i += 1
+	elif i < len(steps) - 200:
+		i += 100
+	elif i < len(steps) - 20:
+		i += 10
+	else:
+		i += 1
+
 print('[' + ', '.join(map(str,result)) + ']')
 print(fitness(result))
 
