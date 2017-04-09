@@ -1,16 +1,19 @@
 import graphics
 import math
 
-def draw(airport, makegatebuilding, coords, filenamenum = None):
-	win = graphics.GraphWin('airport', 600, 600*(airport.bounds[3] - airport.bounds[1])/(airport.bounds[2] - airport.bounds[0])) # give title and dimensions
+def draw(airport, coords, numrunways, filenamenum = None):
+	win = graphics.GraphWin('airport', 800, 800*(airport.bounds[3] - airport.bounds[1])/(airport.bounds[2] - airport.bounds[0])) # give title and dimensions
 	win.setCoords(airport.bounds[0] - 10, airport.bounds[1] - 10, airport.bounds[2] + 10, airport.bounds[3] + 10)
+	
+	rectangle= graphics.Polygon(graphics.Point(-10000, -10000),graphics.Point(-10000, 10000),graphics.Point(10000, 10000),graphics.Point(10000, -10000))
+	rectangle.setFill('black')
+	rectangle.draw(win)
 
 	airportgraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), airport.exterior.coords))
+	airportgraphic.setFill('white')
 	airportgraphic.draw(win)
-	
-	numrunways = (len(coords) - 6)/5
 
-	for i in range(0, numrunways):
+	for i in range(0, numrunways + 1):
 		x = coords[i*5 + 0]
 		y = coords[i*5 + 1]
 		length = coords[i*5 + 2]
@@ -42,20 +45,21 @@ def draw(airport, makegatebuilding, coords, filenamenum = None):
 		runway4 = graphics.Line(graphics.Point(x4, y4), graphics.Point(x1, y1))
 		runway4.setOutline(colour)
 		runway4.draw(win)
-	
-	gatespolygon = makegatebuilding(coords[numrunways*5:])
-	
-	try:
-		gatebuildings = gatespolygon.geoms
-	except AttributeError:
-		gatebuildings = [gatespolygon]
-		
-	for gatebuilding in gatebuildings:
-		gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-		gatebuildinggraphic.draw(win)
-		for interior in gatebuilding.interiors:
-			gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
-			gatebuildinggraphic.draw(win)
+# 	
+# 	gatespolygon = makegatebuilding(coords[numrunways*5:])
+# 	
+# 	try:
+# 		gatebuildings = gatespolygon.geoms
+# 	except AttributeError:
+# 		gatebuildings = [gatespolygon]
+# 		
+# 	for gatebuilding in gatebuildings:
+# 		if gatebuilding:
+# 			gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
+# 			gatebuildinggraphic.draw(win)
+# 			for interior in gatebuilding.interiors:
+# 				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
+# 				gatebuildinggraphic.draw(win)
 
 	if filenamenum is not None:
 		win.postscript(file="output/step-%05d.ps" % filenamenum, colormode='color')

@@ -1,8 +1,8 @@
 import cma
 
-from draw import draw
+import draw_gatebuilding.draw
 
-def optimise(airport, fitness, makegatebuilding, es, printpreviousresult):
+def optimise(airport, numrunways, fitness, makegatebuilding, es, printpreviousresult):
     logger = cma.CMADataLogger().register(es)
     
     ## Draw in in difrent filles
@@ -20,7 +20,7 @@ def optimise(airport, fitness, makegatebuilding, es, printpreviousresult):
     while i < len(steps):
         print("%d of %d" % (i + 1, len(steps)))
         print(steps[i][5:])
-        draw(airport, makegatebuilding, steps[i][5:], i)
+        draw_gatebuilding(airport, makegatebuilding, steps[i][5:], numrunways, i)
         
         i += 1
 #         if i < 100:
@@ -35,4 +35,4 @@ def optimise(airport, fitness, makegatebuilding, es, printpreviousresult):
     print('[' + ', '.join(map(str,result)) + ']')
     print(fitness(result))
     
-    draw(airport, makegatebuilding, result)
+    draw_gatebuilding(airport, makegatebuilding, result, numrunways)
