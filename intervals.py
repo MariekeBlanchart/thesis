@@ -181,11 +181,11 @@ optimise(airport, numrunways, fitness, constructintervals, es, printpreviousresu
 #    
 # for gatebuilding in gatebuildings:
 #     gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-#     gatebuildinggraphic.draw_gatebuilding(win)
+#     gatebuildinggraphic.py(win)
 #        
 #     for interior in gatebuilding.interiors:
 #         gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
-#         gatebuildinggraphic.draw_gatebuilding(win)
+#         gatebuildinggraphic.py(win)
 #    
 # win.getMouse()
 # win.close()
