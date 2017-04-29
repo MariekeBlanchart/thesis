@@ -31,8 +31,13 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
                     res += airport.centroid.distance(gatebuilding.centroid)
             
             totalarea += gatebuilding.area
-            totalperiphery += gatebuilding.exterior.length
         
+        allgates = gatebuildings[0]
+        for polygon in gatebuildings[1:]:
+            allgates = allgates.union(polygon)
+        allgates = allgates.buffer(130)
+        totalperiphery = allgates.boundary.length
+    
         if totalarea < agate_min:
             res += 10* (agate_min - totalarea)
         if  totalarea > agate_max:
@@ -42,14 +47,7 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
         if totalperiphery > pgate_max:
             res += 10* (totalperiphery - pgate_max)
         
-        allgates = gatebuildings[0]
-        for polygon in gatebuildings[1:]:
-            allgates = allgates.union(polygon)
-        allgates = allgates.buffer(130)
-        gateperiphery = allgates.boundary
-    
-        res -= gateperiphery.length / 5
-        
+        res += pgate_max - totalperiphery
         
         ##Kruskal's algorithm
         distances = []

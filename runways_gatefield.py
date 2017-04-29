@@ -6,7 +6,7 @@ import graphics
 from cmath import polar
 from draw_runways_gatefield import draw
 from draw_plots import draw_plots
-import vormstrategie.lijnstukken as vormstrategie
+#import vormstrategie.lijnstukken as vormstrategie
 
 
 ##airport zaventem
@@ -19,10 +19,11 @@ pgate_max =5906
 
 
 
-printpreviousresult = [-1354.31336094, 452.64247043, 3500.23002897, 6168.89492398, -5846.85299418, -3745.61736636, 2016.92606525, 3770.20768578, 6402.41591874, 9861.11027377, -2559.34184182, 1394.07035304, 13936.6405267, 21153.6724838, 43035.7957692]
-printpreviousresult_vormstrategie = None
+printpreviousresult = None
+#printpreviousresult_vormstrategie = [-2024.54823986, 717.542998757, -6419.56521739, 956.710824252, 312.387807216, 892.210905842, 227.751783793, 130.229125326]
 
 ## runways
+
 minrunwaylength = 3500
 minrunwaywidth = 60
 numrunways = 2
@@ -166,90 +167,88 @@ else:
     result = es.result()[0]
 
 print('Result: [' + ', '.join(map(str,result)) + ']')
-print('Fitness: ' + str(fitness(result)))
-
-##uit result haal je plaats voor gate. 
-coords= result[numrunways*5:]
-
-x = coords[0]
-y = coords[1]
-length = coords[2]/10
-width = coords[3]/10
-angle = coords[4]/1000
-
-x1 = x - width * math.sin(angle) / 2 + length * math.cos(angle) / 2
-y1 = y + width * math.cos(angle) / 2 + length * math.sin(angle) / 2
- 
-x2 = x + width * math.sin(angle) / 2 + length * math.cos(angle) / 2
-y2 = y - width * math.cos(angle) / 2 + length * math.sin(angle) / 2
- 
-x3 = x + width * math.sin(angle) / 2 - length * math.cos(angle) / 2
-y3 = y - width * math.cos(angle) / 2 - length * math.sin(angle) / 2
- 
-x4 = x - width * math.sin(angle) / 2 - length * math.cos(angle) / 2
-y4 = y + width * math.cos(angle) / 2 - length * math.sin(angle) / 2
- 
-gatebuilding_polygon = geometry.Polygon([(x1,y1),(x2,y2),(x3,y3),(x4,y4)])
-
-vormstrategie.setairport(gatebuilding_polygon)
-vormstrategie.setmeasures(agate_min, agate_max, pgate_min, pgate_max)
-## Optimalisation
-es_vormstrategie = cma.CMAEvolutionStrategy(vormstrategie.initialvalue(), 1000)
-logger_vormstrategie = cma.CMADataLogger('outputvormstrategie').register(es_vormstrategie)
- 
- 
-    
-## Draw in in difrent filles
-if printpreviousresult_vormstrategie:
-    result_vormstrategie = printpreviousresult_vormstrategie
-else:
-    es_vormstrategie.optimize(vormstrategie.fitness, logger=logger_vormstrategie)
-    es_vormstrategie.result_pretty()
-
-    result_vormstrategie = es_vormstrategie.result()[0]
-
-print('Result: [' + ', '.join(map(str,result_vormstrategie)) + ']')
-print('Fitness: ' + str(vormstrategie.fitness(result_vormstrategie)))
-    
-    
+# 
+# ##uit result haal je plaats voor gate. 
+# coords= result[numrunways*5:]
+# 
+# x = coords[0]
+# y = coords[1]
+# length = coords[2]/10
+# width = coords[3]/10
+# angle = coords[4]/1000
+# 
+# x1 = x - width * math.sin(angle) / 2 + length * math.cos(angle) / 2
+# y1 = y + width * math.cos(angle) / 2 + length * math.sin(angle) / 2
+#  
+# x2 = x + width * math.sin(angle) / 2 + length * math.cos(angle) / 2
+# y2 = y - width * math.cos(angle) / 2 + length * math.sin(angle) / 2
+#  
+# x3 = x + width * math.sin(angle) / 2 - length * math.cos(angle) / 2
+# y3 = y - width * math.cos(angle) / 2 - length * math.sin(angle) / 2
+#  
+# x4 = x - width * math.sin(angle) / 2 - length * math.cos(angle) / 2
+# y4 = y + width * math.cos(angle) / 2 - length * math.sin(angle) / 2
+#  
+# gatebuilding_polygon = geometry.Polygon([(x1,y1),(x2,y2),(x3,y3),(x4,y4)])
+# 
+# vormstrategie.setairport(gatebuilding_polygon)
+# vormstrategie.setmeasures(agate_min, agate_max, pgate_min, pgate_max)
+# ## Optimalisation
+# es_vormstrategie = cma.CMAEvolutionStrategy(vormstrategie.initialvalue(), 1000)
+# logger_vormstrategie = cma.CMADataLogger('outputvormstrategie').register(es_vormstrategie)
+#  
+#  
+#     
+# ## Draw in in difrent filles
+# if printpreviousresult_vormstrategie:
+#     result_vormstrategie = printpreviousresult_vormstrategie
+# else:
+#     es_vormstrategie.optimize(vormstrategie.fitness, logger=logger_vormstrategie)
+#     es_vormstrategie.result_pretty()
+# 
+#     result_vormstrategie = es_vormstrategie.result()[0]
+# 
+# print('Result: [' + ', '.join(map(str,result_vormstrategie)) + ']')
+# print('Fitness: ' + str(vormstrategie.fitness(result_vormstrategie)))
+     
+     
 steps = logger.load().data()["xrecent"]
-'''
 i = 0
 while i < len(steps):
     print("%d of %d" % (i + 1, len(steps)))
     print(steps[i][5:])
     draw(airport, steps[i][5:], numrunways, i)
-     
+         
     i += 1
-'''
-
+#  
 #means = logger.load().data()["xmean"]
 print('Result: [' + ', '.join(map(str,result)) + ']')
-print('Fitness: ' + str(fitness(result)))
-
+print('Fitness: ' + str(min([step[4] for step in steps])))
+ 
 ##Drawpolt
-draw_plots([step[4] for step in steps])#, [fitness(mean[5:]) for mean in means])
+draw_plots(fitnessnumbers=[step[4] for step in steps])#, [fitness(mean[5:]) for mean in means])
 
-
-steps_vormstrategie = logger_vormstrategie.load().data()["xrecent"]
-
-i = 0
-while i < len(steps_vormstrategie):
-    print("%d of %d" % (i + 1, len(steps_vormstrategie)))
-    print(steps_vormstrategie[i][5:])
-    draw(airport, result, numrunways, steps_vormstrategie[i][5:], vormstrategie.construct, i)
-     
-    i += 1
-
-
-#means_vormstrategie = logger_vormstrategie.load().data()["xmean"]
-
-print('Result: [' + ', '.join(map(str,result_vormstrategie)) + ']')
-print('Fitness: ' + str(vormstrategie.fitness(result_vormstrategie)))
-
-##Drawpolt
-draw_plots([step_vormstrategie[4] for step_vormstrategie in steps_vormstrategie])#, [vormstrategie.fitness(mean_vormstrategie[5:]) for mean_vormstrategie in means_vormstrategie])
-
-
-draw(airport, result, numrunways,result_vormstrategie, vormstrategie.construct)
+draw(airport, result, numrunways)
+ 
+# steps_vormstrategie = logger_vormstrategie.load().data()["xrecent"]
+# 
+# i = 0
+# while i < len(steps_vormstrategie):
+#     print("%d of %d" % (i + 1, len(steps_vormstrategie)))
+#     print(steps_vormstrategie[i][5:])
+#     draw(airport, result, numrunways, steps_vormstrategie[i][5:], vormstrategie.construct, i)
+#      
+#     i += 1
+# 
+# 
+# #means_vormstrategie = logger_vormstrategie.load().data()["xmean"]
+# 
+# print('Result: [' + ', '.join(map(str,result_vormstrategie)) + ']')
+# print('Fitness: ' + str(vormstrategie.fitness(result_vormstrategie)))
+# 
+# ##Drawpolt
+# draw_plots([step_vormstrategie[4] for step_vormstrategie in steps_vormstrategie])#, [vormstrategie.fitness(mean_vormstrategie[5:]) for mean_vormstrategie in means_vormstrategie])
+# 
+# 
+# draw(airport, result, numrunways,result_vormstrategie, vormstrategie.construct)
 

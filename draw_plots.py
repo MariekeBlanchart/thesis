@@ -2,7 +2,14 @@ import matplotlib.pyplot as plt
 
 def draw_plots (fitnessnumbers):
     plt.figure()
-    plt.plot([x - min(fitnessnumbers) + 0.00000001 for x in fitnessnumbers])
+    plt.plot(fitnessnumbers, 'g')
+    minimum = min(fitnessnumbers)
+    minimum2 = min2(fitnessnumbers)
+    plt.plot([x- minimum + (minimum2 - minimum)   for x in fitnessnumbers], 'b')
     plt.ylabel('Fitness')
     plt.yscale('log')
     plt.show()
+    
+def min2(ns):
+    m = min(ns)
+    return min([n for n in ns if n > m])

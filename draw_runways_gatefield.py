@@ -2,7 +2,8 @@ import shapely.geometry as geometry
 import graphics
 import math
 
-def draw(airport, coords, numrunways, result_vormstrategie, construct_vormstrategie, filenamenum = None):
+#def draw(airport, coords, numrunways, result_vormstrategie, construct_vormstrategie, filenamenum = None):
+def draw(airport, coords, numrunways, filenamenum = None):
 	win = graphics.GraphWin('airport', 800, 800*(airport.bounds[3] - airport.bounds[1])/(airport.bounds[2] - airport.bounds[0])) # give title and dimensions
 	win.setCoords(airport.bounds[0] - 10, airport.bounds[1] - 10, airport.bounds[2] + 10, airport.bounds[3] + 10)
 	
@@ -70,25 +71,25 @@ def draw(airport, coords, numrunways, result_vormstrategie, construct_vormstrate
 			runwayoutsidegraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), r.exterior.coords))
 			runwayoutsidegraphic.setOutline("white")
 			runwayoutsidegraphic.draw(win)
-
-	polygon_vormstrategie= construct_vormstrategie(result_vormstrategie)
-	if isinstance(polygon_vormstrategie, list):
-		gatebuildings = polygon_vormstrategie
-	else:
-		try:
-			gatebuildings = polygon_vormstrategie.geoms
-		except AttributeError:
-			gatebuildings = [polygon_vormstrategie]
-		
-	for gatebuilding in gatebuildings:
-		if gatebuilding:
-			gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-			runwayinsidegraphic.setOutline("black")
-			gatebuildinggraphic.draw(win)
-			for interior in gatebuilding.interiors:
-				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
-				runwayinsidegraphic.setOutline("black")
-				gatebuildinggraphic.draw(win)
+# 
+# 	polygon_vormstrategie= construct_vormstrategie(result_vormstrategie)
+# 	if isinstance(polygon_vormstrategie, list):
+# 		gatebuildings = polygon_vormstrategie
+# 	else:
+# 		try:
+# 			gatebuildings = polygon_vormstrategie.geoms
+# 		except AttributeError:
+# 			gatebuildings = [polygon_vormstrategie]
+# 		
+# 	for gatebuilding in gatebuildings:
+# 		if gatebuilding:
+# 			gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
+# 			runwayinsidegraphic.setOutline("black")
+# 			gatebuildinggraphic.draw(win)
+# 			for interior in gatebuilding.interiors:
+# 				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
+# 				runwayinsidegraphic.setOutline("black")
+# 				gatebuildinggraphic.draw(win)
 
 
 	if filenamenum is not None:
