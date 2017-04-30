@@ -16,7 +16,7 @@ def setairport (a):
     global airport 
     airport = a
 def initialvalue ():
-    return 8*[0] 
+    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1]] + 6*[0]
 def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
     global agate_min
     global agate_max

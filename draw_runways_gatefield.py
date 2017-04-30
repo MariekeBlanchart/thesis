@@ -2,8 +2,7 @@ import shapely.geometry as geometry
 import graphics
 import math
 
-#def draw(airport, coords, numrunways, result_vormstrategie, construct_vormstrategie, filenamenum = None):
-def draw(airport, coords, numrunways, filenamenum = None):
+def draw(airport, coords, numrunways, result_vormstrategie = None, mean_vormstrategie = None, construct_vormstrategie = None, filenamenum = None, merge=False):
 	win = graphics.GraphWin('airport', 800, 800*(airport.bounds[3] - airport.bounds[1])/(airport.bounds[2] - airport.bounds[0])) # give title and dimensions
 	win.setCoords(airport.bounds[0] - 10, airport.bounds[1] - 10, airport.bounds[2] + 10, airport.bounds[3] + 10)
 	
@@ -71,29 +70,55 @@ def draw(airport, coords, numrunways, filenamenum = None):
 			runwayoutsidegraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), r.exterior.coords))
 			runwayoutsidegraphic.setOutline("white")
 			runwayoutsidegraphic.draw(win)
-# 
-# 	polygon_vormstrategie= construct_vormstrategie(result_vormstrategie)
-# 	if isinstance(polygon_vormstrategie, list):
-# 		gatebuildings = polygon_vormstrategie
-# 	else:
-# 		try:
-# 			gatebuildings = polygon_vormstrategie.geoms
-# 		except AttributeError:
-# 			gatebuildings = [polygon_vormstrategie]
-# 		
-# 	for gatebuilding in gatebuildings:
-# 		if gatebuilding:
-# 			gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-# 			runwayinsidegraphic.setOutline("black")
-# 			gatebuildinggraphic.draw(win)
-# 			for interior in gatebuilding.interiors:
-# 				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
-# 				runwayinsidegraphic.setOutline("black")
-# 				gatebuildinggraphic.draw(win)
 
+	if result_vormstrategie is not None:
+		polygon_vormstrategie= construct_vormstrategie(result_vormstrategie)
+		if isinstance(polygon_vormstrategie, list):
+			gatebuildings = polygon_vormstrategie
+		else:
+			try:
+				gatebuildings = polygon_vormstrategie.geoms
+			except AttributeError:
+				gatebuildings = [polygon_vormstrategie]
+	
+		if merge:
+			mergedbuilding = gatebuildings[0]
+			for gatebuilding in gatebuildings[1:]:
+				mergedbuilding = mergedbuilding.union(gatebuilding)
+			gatebuildings = [mergedbuilding]
+			
+		for gatebuilding in gatebuildings:
+			if gatebuilding:
+				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
+				gatebuildinggraphic.setOutline("black")
+				gatebuildinggraphic.draw(win)
+				for interior in gatebuilding.interiors:
+					gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
+					gatebuildinggraphic.setOutline("black")
+					gatebuildinggraphic.draw(win)
+	
+		if mean_vormstrategie is not None:
+			polygon_vormstrategie= construct_vormstrategie(mean_vormstrategie)
+			if isinstance(polygon_vormstrategie, list):
+				gatebuildings = polygon_vormstrategie
+			else:
+				try:
+					gatebuildings = polygon_vormstrategie.geoms
+				except AttributeError:
+					gatebuildings = [polygon_vormstrategie]
+				
+			for gatebuilding in gatebuildings:
+				if gatebuilding:
+					gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
+					gatebuildinggraphic.setOutline("grey")
+					gatebuildinggraphic.draw(win)
+					for interior in gatebuilding.interiors:
+						gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
+						gatebuildinggraphic.draw(win)
 
 	if filenamenum is not None:
 		win.postscript(file="output/step-%05d.ps" % filenamenum, colormode='color')
 	else:
+		win.postscript(file="output/stepfinal.ps", colormode='color')
 		win.getMouse()
 	win.close()

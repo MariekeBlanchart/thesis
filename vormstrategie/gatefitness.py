@@ -18,9 +18,6 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
 
     ## maesurements airport
     try:
-        totalarea = 0
-        totalperiphery = 0
-        
         for gatebuilding in gatebuildings:
             if not airport.contains(gatebuilding) and gatebuilding.area:
                 areaoutsideairport = 10*(10 + gatebuilding.difference(airport).area / gatebuilding.area * 100) # Percent of terminal that's outside airport
@@ -29,12 +26,11 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
                 if areaoutsideairport > 99:
                     # Try to guide terminal towards airportfield
                     res += airport.centroid.distance(gatebuilding.centroid)
-            
-            totalarea += gatebuilding.area
         
         allgates = gatebuildings[0]
         for polygon in gatebuildings[1:]:
             allgates = allgates.union(polygon)
+        totalarea = allgates.area
         allgates = allgates.buffer(130)
         totalperiphery = allgates.boundary.length
     

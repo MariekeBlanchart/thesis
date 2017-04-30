@@ -11,7 +11,7 @@ def setairport (a):
     global airport
     airport = a
 def initialvalue ():
-    return 14*[0]
+    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1]] + 12*[0]
 def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
     global agate_min
     global agate_max
@@ -35,7 +35,7 @@ def construct(coords):
     
     ## random construction
 
-    alphabet = ["", "G", "+", "F", "-", "[", "]"]
+    alphabet = ["[", "]", "+", "F", "-", "[", "]"]
     maxletters = 12
     theta = math.pi/4
 
