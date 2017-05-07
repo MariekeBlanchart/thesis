@@ -3,7 +3,7 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
     res = 0
     
     if not gatespolygon:
-        return 100000
+        return 10000000
     
     
     ## check if its a list, make a list
@@ -20,7 +20,7 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
     try:
         for gatebuilding in gatebuildings:
             if not airport.contains(gatebuilding) and gatebuilding.area:
-                areaoutsideairport = 10*(10 + gatebuilding.difference(airport).area / gatebuilding.area * 100) # Percent of terminal that's outside airport
+                areaoutsideairport = 1000*(10 + gatebuilding.difference(airport).area / gatebuilding.area * 100) # Percent of terminal that's outside airport
                 res += areaoutsideairport
                 
                 if areaoutsideairport > 99:
@@ -79,6 +79,6 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
         res += totaldistance   
          
     except:
-        return 10000000
+        return 1000000
    
     return res

@@ -57,3 +57,7 @@ def construct(coords):
             
 def fitness(coords):
     return gatefitness(airport, construct(coords),agate_min, agate_max, pgate_min, pgate_max)
+
+def printline(result_vormstrategie):
+    print('Lengte gategebouw:            ' + str(result_vormstrategie[0]))
+    print('Breedte gategebouw:           ' + str(result_vormstrategie[1]/100))

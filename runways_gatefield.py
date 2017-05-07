@@ -4,7 +4,8 @@ import cma
 import math
 from draw_runways_gatefield import draw
 from draw_plots import draw_plots
-import vormstrategie.willekeurige_rechthoeken as vormstrategie
+import vormstrategie.lijnstukken as vormstrategie
+
 
 
 ##airport zaventem
@@ -16,9 +17,14 @@ pgate_min =5369
 pgate_max =5906
 
 
-
 printpreviousresult = [-3958.64747818, 1725.352913, 3821.04317576, 6708.95699515, -8988.44564777, -1355.04641617, 452.918635714, 3502.00711803, 6024.31532488, 9861.11027377, -2663.10739089, 1076.28464214, 17900.7431327, 12384.8625459, -18056.8180969]
-printpreviousresult_vormstrategie = None
+printpreviousresult_vormstrategie =  None
+
+## buffers
+## buffer airport lenght ->  peripheri
+airportlength = 90
+## buffer between runway and gatefield
+bufferbetweenrg = 125
 
 ## runways
 minrunwaylength = 3500
@@ -214,9 +220,9 @@ steps = logger.load().data()["xrecent"]
 #     print("%d of %d" % (i + 1, len(steps)))
 #     print(steps[i][5:])
 #     draw(airport, steps[i][5:], numrunways, i)
-#          
+#           
 #     i += 1
-#  
+#   
 #means = logger.load().data()["xmean"]
 print('Result: [' + ', '.join(map(str,result)) + ']')
 print('Fitness: ' + str(min([step[4] for step in steps])))
@@ -234,12 +240,15 @@ while i < len(steps_vormstrategie):
     print("%d of %d" % (i + 1, len(steps_vormstrategie)))
     print(steps_vormstrategie[i][5:])
     draw(airport, result, numrunways, steps_vormstrategie[i][5:], means_vormstrategie[i][5:], vormstrategie.construct, i)
-         
+            
     i += 1
-  
+#   
  
 #means_vormstrategie = logger_vormstrategie.load().data()["xmean"]
 
+
+
+## print info vormstrategie
 gatespolygon = vormstrategie.construct(result_vormstrategie)
 
 ## check if its a list, make a list
@@ -251,22 +260,26 @@ else:
     except AttributeError:
         gatebuildings = [gatespolygon]
 
-allgates = gatebuildings[0]
-for polygon in gatebuildings[1:]:
-    allgates = allgates.union(polygon)
-totalarea = allgates.area
-allgates = allgates.buffer(130)
-totalperiphery = allgates.boundary.length
+totalarea = 0
+totalperiphery = 0
+try:
+    allgates = gatebuildings[0]
+    for polygon in gatebuildings[1:]:
+        allgates = allgates.union(polygon)
+        totalarea = allgates.area
+        allgates = allgates.buffer(airportlength)
+        totalperiphery = allgates.boundary.length
+except:
+    pass
  
 print('Result:                       [' + ', '.join(map(str,result_vormstrategie)) + ']')
+print('Fitness:                      ' + str(min([step_vormstrategie[4] for step_vormstrategie in steps_vormstrategie])))
 print('Gegeven oppervlakte:          ' + str(agate_min) + ' - ' + str(agate_max))
 print('Geoptimaliseerde oppervlakte: ' + str(totalarea))
 print('Gegeven omtrek:               ' + str(pgate_min) + ' - ' + str(pgate_max))
 print('Geoptimaliseerde omtrek:      ' + str(totalperiphery))
 print('Aantal vliegtuigen:           ' + str(int(totalperiphery / 45)))
-print('Lengte gategebouw:            ' + str(result_vormstrategie[0]))
-print('Breedte gategebouw:           ' + str(result_vormstrategie[1]/100))
-print('Fitness:                      ' + str(min([step_vormstrategie[4] for step_vormstrategie in steps_vormstrategie])))
+
 
 ##Drawpolt
 draw_plots([step_vormstrategie[4] for step_vormstrategie in steps_vormstrategie])#, [vormstrategie.fitness(mean_vormstrategie[5:]) for mean_vormstrategie in means_vormstrategie])

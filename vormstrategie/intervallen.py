@@ -6,9 +6,9 @@ import graphics
 from gatefitness import gatefitness
 
 ##line termibalbuilsing
-lineterminalpoint = (-3342.6912, 1041.9505)
-linelength = 900
-lineangle = 25
+#lineterminalpoint = (-3342.6912, 1041.9505)
+#linelength = 900
+#lineangle = 25
 
 agate_min = None
 agate_max = None
@@ -21,7 +21,7 @@ def setairport (a):
     global airport
     airport = a
 def initialvalue ():
-    return 20*[0]
+    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1], 0] + 20*[0]
 
 def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
     global agate_min
@@ -34,20 +34,23 @@ def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
     pgate_max = maxperiphery
 
 def construct(coords):
+    lineterminalpoint = (coords[0], coords[1])
+    lineangle = coords[2]/100
+
     polygons = []
     
     for i in range (0,10):
         x1 = 90*i 
-        y1 = -coords[2*i]
+        y1 = -coords[3+2*i]
         
         x2 =  90*i +90
-        y2 = -coords[2*i]
+        y2 = -coords[3+2*i]
         
         x3 = 90*i +90
-        y3 = coords[2*i+1]
+        y3 = coords[3+2*i+1]
         
         x4 =  90*i
-        y4 = coords[2*i+1]
+        y4 = coords[3+2*i+1]
         
         polygons.append(geometry.Polygon([(x1,y1),(x2,y2),(x3,y3),(x4,y4)]))
 
@@ -60,6 +63,14 @@ def construct(coords):
     return polygon
 
 def fitness(coords):
-
+    sumofnegativenumbers = -sum([x for x in coords[3:] if x < 0 ])
+    if sumofnegativenumbers > 0:
+        return 100000000000 + sumofnegativenumbers * 1000
+    
     return gatefitness(airport, construct(coords), agate_min, agate_max, pgate_min, pgate_max)
+def printline(result_vormstrategie):
+    pass
+    print('Coordinaat X:                ' + str(result_vormstrategie[0]))
+    print('Coordinaat Y:                ' + str(result_vormstrategie[1]))
+    print('Hoek:                        ' + str(result_vormstrategie[2]/100))
 

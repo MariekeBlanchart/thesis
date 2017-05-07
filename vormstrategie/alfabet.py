@@ -11,7 +11,7 @@ def setairport (a):
     global airport
     airport = a
 def initialvalue ():
-    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1]] + 12*[0]
+    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1]] + 45*[0]
 def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
     global agate_min
     global agate_max
@@ -35,22 +35,44 @@ def construct(coords):
     
     ## random construction
 
-    alphabet = ["[", "]", "+", "F", "-", "[", "]"]
-    maxletters = 12
+    alphabet = ["x", "G", "+", "F", "-", "[", "]"]
+    maxletters = 45
     theta = math.pi/4
 
     rule = ""
     
-    for c in range(0, maxletters):
-        rulenumber = int(coords[2 + c] / 145)
-        if rulenumber < 0 or rulenumber >= 7:
+#     for c in range(0, maxletters):
+#         rulenumber = int(coords[2 + c] / 145)
+#         if rulenumber < 0 or rulenumber >= 7:
+#             return None
+#         rule += alphabet[rulenumber]
+# 
+#     polygon = None
+    
+    for i in range(0, maxletters):
+        rulenumber = coords[2 + i]
+        if -4000 < rulenumber <= -1066.96:
+            rule+= alphabet[0]
+        elif -1066.96 < rulenumber <= -564.73:
+            rule+= alphabet[1]
+        elif -564.73 < rulenumber <= -178.56:
+            rule+= alphabet[2]
+        elif -178.56 < rulenumber <= 178.56:
+            rule+= alphabet[3]
+        elif 178.56 < rulenumber <= 564.73:
+            rule+= alphabet[4]
+        elif  564.73 < rulenumber <= 1066.96:
+            rule+= alphabet[5]
+        elif  1066.96 < rulenumber <= 4000:
+            rule+= alphabet[6]
+        else:
             return None
-        rule += alphabet[rulenumber]
 
-    polygon = None
+    print(rule)
+    
     [x, y] = coords[:2]
     l = 300
-    w = 120
+    w = 90
     
     angle = 0
     positions = []
@@ -105,12 +127,40 @@ def fitness(coords):
     errors = 0
     
     for c in coords[2:]:
-        if c < 0:
+        if c < -4000:
             errors += 10000000 - 10000*c
-        if c > 7 * 145:
+        if c > 4000:
             errors += 10000*c
             
     if errors:
         return errors
     
+
     return gatefitness(airport, construct(coords),agate_min, agate_max, pgate_min, pgate_max)
+
+def printline(result_vormstrategie,  ):
+    alphabet = ["]", "F", "+", "F", "-", "[", "]"]
+    maxletters = 12
+    theta = math.pi/4
+
+    rule = ""
+    
+    for i in range(0, maxletters):
+        rulenumber = int(result_vormstrategie[2 + i])
+        if -4000 < rulenumber <= -1066.96:
+            rule+= alphabet[0]
+        if -1066.96 < rulenumber <= -564.73:
+            rule+= alphabet[1]
+        if -564.73 < rulenumber <= -178.56:
+            rule+= alphabet[2]
+        if -178.56 < rulenumber <= 178.56:
+            rule+= alphabet[3]
+        if 178.56 < rulenumber <= 564.73:
+            rule+= alphabet[4]
+        if  564.73 < rulenumber <= 1066.96:
+            rule+= alphabet[5]
+        if  1066.96 < rulenumber <= 4000:
+            rule+= alphabet[6]
+
+    
+    print('Alfabet regel:                    ' + str(rule))

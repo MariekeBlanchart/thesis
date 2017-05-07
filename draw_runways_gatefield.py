@@ -90,11 +90,11 @@ def draw(airport, coords, numrunways, result_vormstrategie = None, mean_vormstra
 		for gatebuilding in gatebuildings:
 			if gatebuilding:
 				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-				gatebuildinggraphic.setOutline("black")
+				gatebuildinggraphic.setOutline("red")
 				gatebuildinggraphic.draw(win)
 				for interior in gatebuilding.interiors:
 					gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
-					gatebuildinggraphic.setOutline("black")
+					gatebuildinggraphic.setOutline("red")
 					gatebuildinggraphic.draw(win)
 	
 		if mean_vormstrategie is not None:
