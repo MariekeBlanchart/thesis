@@ -3,28 +3,33 @@ import shapely.geometry as geometry
 import cma
 import math
 import graphics
-from gatefitness import gatefitness
-
-airport =None
+from shape_strategy.gate_fitness import gatefitness
 
 numgate = 5
-mingatelength = 600
-mingatewidth = 60
+mingatelength = None
+mingatewidth = 100
+
+airport =None
 
 def setairport (a):
     global airport
     airport = a
 def initialvalue ():
+    print(mingatelength)
     return [mingatelength, mingatewidth*100] + numgate * [airport.centroid.coords[0][0], airport.centroid.coords[0][1], 0]
-def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
+def setmeasures(minarea, maxarea, minperiphery, maxperiphery):#, runwaypointsa):
     global agate_min
     global agate_max
     global pgate_min
     global pgate_max
+    #global runwaypoints
+    global mingatelength
     agate_min = minarea
     agate_max = maxarea
     pgate_min = minperiphery
     pgate_max = maxperiphery
+    #runwaypoints = runwaypointsa
+    mingatelength = agate_min / numgate / mingatewidth
 
 def construct(coords):
     gatepolygons= []

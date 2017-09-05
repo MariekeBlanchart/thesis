@@ -1,4 +1,10 @@
-def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_max):
+import shapely.geometry as geometry
+
+buffergate = 130
+# numsamples = 10
+# bubbleinterval = 100
+
+def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_max): #, runwaypoints):
     
     res = 0
     
@@ -16,24 +22,25 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
             gatebuildings = [gatespolygon]
 
 
-    ## maesurements airport
+    ##
     try:
         for gatebuilding in gatebuildings:
             if not airport.contains(gatebuilding) and gatebuilding.area:
-                areaoutsideairport = 1000*(10 + gatebuilding.difference(airport).area / gatebuilding.area * 100) # Percent of terminal that's outside airport
-                res += areaoutsideairport
+                areaoutsideairport = gatebuilding.difference(airport).area / gatebuilding.area * 100 # Percent of terminal that's outside airport
+                res += 100* ( 10 + areaoutsideairport)
                 
                 if areaoutsideairport > 99:
                     # Try to guide terminal towards airportfield
-                    res += airport.centroid.distance(gatebuilding.centroid)
+                    res += 100* airport.centroid.distance(gatebuilding.centroid)
         
+        ## maesurements airport
         allgates = gatebuildings[0]
         for polygon in gatebuildings[1:]:
             allgates = allgates.union(polygon)
         totalarea = allgates.area
-        allgates = allgates.buffer(130)
+        allgates = allgates.buffer(buffergate)
         totalperiphery = allgates.boundary.length
-    
+        
         if totalarea < agate_min:
             res += 10* (agate_min - totalarea)
         if  totalarea > agate_max:
@@ -44,7 +51,25 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
             res += 10* (totalperiphery - pgate_max)
         
         res += pgate_max - totalperiphery
-        
+    
+#     ## path
+#     for runwaypoint in runwaypoints:
+#         runwaypoint = geometry.Point(runwaypoint[0], runwaypoint[1])
+#         losCone = allgates.union(runwaypoint).convex_hull - allgates.convex_hull
+#     
+#         for i in range(0, numsamples):
+#             bubble = allgates.boundary.interpolate(float(i) / numsamples, normalized=True)
+#             bubbleSize = 0
+#         
+#             while not bubble.intersects(losCone):
+#                 prevbubble = bubble
+#                 bubble = bubble.buffer(bubbleinterval).difference(allgates)
+#                 if bubble == prevbubble:
+#                     return 1000000
+#                 bubbleSize += bubbleinterval
+#             
+#             res += bubbleSize + bubble.intersection(losCone).distance(runwaypoint)
+#     
         ##Kruskal's algorithm
         distances = []
         comp = {}
@@ -76,7 +101,7 @@ def gatefitness(airport, gatespolygon, agate_min, agate_max, pgate_min, pgate_ma
                 comp[v] = comp[v].union(comp[b])
             for v in comp[b]:
                 comp[v] = comp[v].union(comp[a])
-        res += totaldistance   
+        res += 10*totaldistance   
          
     except:
         return 1000000

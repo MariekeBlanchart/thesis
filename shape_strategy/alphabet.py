@@ -3,24 +3,29 @@ import shapely.geometry as geometry
 import cma
 import math
 import graphics
-from gatefitness import gatefitness
+from shape_strategy.gate_fitness import gatefitness
 
 airport =None
+maxletters = 50
+alphabet = ["x", "G", "+", "F", "-", "[", "]"]
+theta = math.pi/4
 
 def setairport (a):
     global airport
     airport = a
 def initialvalue ():
-    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1]] + 45*[0]
-def setmeasures(minarea, maxarea, minperiphery, maxperiphery):
+    return [airport.centroid.coords[0][0], airport.centroid.coords[0][1]] + maxletters*[0]
+def setmeasures(minarea, maxarea, minperiphery, maxperiphery):#, runwaypointsa):
     global agate_min
     global agate_max
     global pgate_min
     global pgate_max
+    #global runwaypoints
     agate_min = minarea
     agate_max = maxarea
     pgate_min = minperiphery
     pgate_max = maxperiphery
+    #runwaypoints = runwaypointsa
     
 def construct(coords):
     ## Dragon curve
@@ -34,11 +39,6 @@ def construct(coords):
 #     theta = math.pi/4
     
     ## random construction
-
-    alphabet = ["x", "G", "+", "F", "-", "[", "]"]
-    maxletters = 45
-    theta = math.pi/4
-
     rule = ""
     
 #     for c in range(0, maxletters):
@@ -139,10 +139,6 @@ def fitness(coords):
     return gatefitness(airport, construct(coords),agate_min, agate_max, pgate_min, pgate_max)
 
 def printline(result_vormstrategie,  ):
-    alphabet = ["]", "F", "+", "F", "-", "[", "]"]
-    maxletters = 12
-    theta = math.pi/4
-
     rule = ""
     
     for i in range(0, maxletters):
@@ -163,4 +159,4 @@ def printline(result_vormstrategie,  ):
             rule+= alphabet[6]
 
     
-    print('Alfabet regel:                    ' + str(rule))
+    print('Alfabet regel:                ' + str(rule))

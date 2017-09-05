@@ -6,6 +6,8 @@ def draw_plots (fitnessnumbers):
     minimum = min(fitnessnumbers)
     minimum2 = min2(fitnessnumbers)
     plt.plot([x- minimum + (minimum2 - minimum)   for x in fitnessnumbers], 'b')
+    plt.title('Optimalisatie van een landingsbaan')
+    plt.xlabel('Generatie')
     plt.ylabel('Fitness')
     plt.yscale('log')
     plt.show()

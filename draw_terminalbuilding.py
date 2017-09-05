@@ -19,11 +19,11 @@ def draw(airport, makegatebuilding, coords, numrunways, filenamenum = None):
 		x1 = x - width * math.sin(angle) / 2 + length * math.cos(angle) / 2
 		y1 = y + width * math.cos(angle) / 2 + length * math.sin(angle) / 2
 		
-		x2 = x + width * math.sin(angle) / 2 + length * math.cos(angle) / 2
-		y2 = y - width * math.cos(angle) / 2 + length * math.sin(angle) / 2
+		x2 = x + width * math.sin(angle) / 2 - length * math.cos(angle) / 2
+		y2 = y - width * math.cos(angle) / 2 - length * math.sin(angle) / 2
 		
-		x3 = x + width * math.sin(angle) / 2 - length * math.cos(angle) / 2
-		y3 = y - width * math.cos(angle) / 2 - length * math.sin(angle) / 2
+		x3 = x + width * math.sin(angle) / 2 + length * math.cos(angle) / 2
+		y3 = y - width * math.cos(angle) / 2 + length * math.sin(angle) / 2
 		
 		x4 = x - width * math.sin(angle) / 2 - length * math.cos(angle) / 2
 		y4 = y + width * math.cos(angle) / 2 - length * math.sin(angle) / 2

@@ -2,17 +2,49 @@ import shapely.geometry as geometry
 import graphics
 import math
 
-def draw(airport, coords, numrunways, result_vormstrategie = None, mean_vormstrategie = None, construct_vormstrategie = None, filenamenum = None, merge=False):
-	win = graphics.GraphWin('airport', 800, 800*(airport.bounds[3] - airport.bounds[1])/(airport.bounds[2] - airport.bounds[0])) # give title and dimensions
-	win.setCoords(airport.bounds[0] - 10, airport.bounds[1] - 10, airport.bounds[2] + 10, airport.bounds[3] + 10)
+def draw(airport, coords, numrunways, result_vormstrategie = None, mean_vormstrategie = None, construct_vormstrategie = None, filenamenum = None, ofnum = None, merge=False):
+	win = graphics.GraphWin('airport', 1040, 800) # give title and dimensions
+	airportwidth = airport.bounds[2] - airport.bounds[0] + 1000
+	airportheight = airport.bounds[3] - airport.bounds[1] + 200
+	maxdimension = max(airportwidth / 13, airportheight / 10)
+	win.setCoords(airport.bounds[0] - (maxdimension * 13 - airportwidth)/2 - 500,
+				  airport.bounds[1] - (maxdimension * 10 - airportheight)/2 - 100,
+				  airport.bounds[2] + (maxdimension * 13 - airportwidth)/2 + 500,
+				  airport.bounds[3] + (maxdimension * 10 - airportheight)/2 + 100)
 	
-	rectangle= graphics.Polygon(graphics.Point(-10000, -10000),graphics.Point(-10000, 10000),graphics.Point(10000, 10000),graphics.Point(10000, -10000))
-	rectangle.setFill('black')
+	rectangle= graphics.Polygon(graphics.Point(-100000, -100000),graphics.Point(-100000, 100000),graphics.Point(100000, 100000),graphics.Point(100000, -100000))
+	rectangle.setFill('#869685')
 	rectangle.draw(win)
 
 	airportgraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), airport.exterior.coords))
 	airportgraphic.setFill('white')
 	airportgraphic.draw(win)
+	
+	###scale 5 blokje
+	ymin = airport.bounds[1] - 10
+	if airportwidth / airportheight < 0.79:
+		xmax = airport.bounds[2] + 10 + 500
+	else:
+		xmax = airport.bounds[2] + 10 - 200
+	heightbox= 50
+	widthbox = 100
+	
+	for i in range(0, 5):
+		rectangle = graphics.Polygon(graphics.Point(xmax - widthbox, ymin + heightbox),
+									 graphics.Point(xmax,            ymin + heightbox),
+									 graphics.Point(xmax,            ymin),
+									 graphics.Point(xmax - widthbox, ymin))
+		rectangle.setFill("gray" if i % 2 else "white")
+		rectangle.draw(win)
+		xmax -= widthbox
+	
+	## Compass rose
+	
+	if ofnum:
+		##numbre of iterations
+		label = graphics.Text(graphics.Point(xmax + widthbox+140, ymin + heightbox + 100), "%d of %d" % (filenamenum + 1 if filenamenum else ofnum, ofnum))
+		label.setFill("gray")
+		label.draw(win)
 
 	for i in range(0, numrunways + 1):
 		if i < numrunways:
@@ -90,11 +122,14 @@ def draw(airport, coords, numrunways, result_vormstrategie = None, mean_vormstra
 		for gatebuilding in gatebuildings:
 			if gatebuilding:
 				gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-				gatebuildinggraphic.setOutline("red")
+				if not filenamenum:
+					gatebuildinggraphic.setFill("grey")
+				gatebuildinggraphic.setOutline("black")
 				gatebuildinggraphic.draw(win)
 				for interior in gatebuilding.interiors:
 					gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
-					gatebuildinggraphic.setOutline("red")
+					gatebuildinggraphic.setFill("white")
+					gatebuildinggraphic.setOutline("black")
 					gatebuildinggraphic.draw(win)
 	
 		if mean_vormstrategie is not None:
@@ -110,10 +145,14 @@ def draw(airport, coords, numrunways, result_vormstrategie = None, mean_vormstra
 			for gatebuilding in gatebuildings:
 				if gatebuilding:
 					gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), gatebuilding.exterior.coords))
-					gatebuildinggraphic.setOutline("grey")
+					if not filenamenum:
+						gatebuildinggraphic.setFill("grey")
+					gatebuildinggraphic.setOutline("black")
 					gatebuildinggraphic.draw(win)
 					for interior in gatebuilding.interiors:
 						gatebuildinggraphic = graphics.Polygon(map(lambda (x, y): graphics.Point(x,y), interior.coords))
+						gatebuildinggraphic.setFill("white")
+						gatebuildinggraphic.setOutline("black")
 						gatebuildinggraphic.draw(win)
 
 	if filenamenum is not None:
